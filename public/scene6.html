@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    html, body {
+        position: absolute;
+        width: 100.1%;
+        height: 100%;
+        left: -0.3%;
+        top: -0.4%;
+    }
+</style>
+<body onload="animate()">
+
+</body>
+<script src="js/three.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/stats.min.js"></script>
+<script src="js/OBJLoader.js"></script>
+<script src="js/shaders/ConvolutionShader.js"></script>
+<script src="js/shaders/CopyShader.js"></script>
+
+<script src="js/postprocessing/EffectComposer.js"></script>
+<script src="js/postprocessing/RenderPass.js"></script>
+<script src="js/postprocessing/MaskPass.js"></script>
+<script src="js/postprocessing/BloomPass.js"></script>
+<script src="js/postprocessing/ShaderPass.js"></script>
+<script src="js/dat.gui.min.js"></script>
+<script>
+    let renderer;
+    let scene;
+    let camera;
+    let background;
+    let controls;
+    let ambient;
+    let light
+
+
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1e10);
+    camera.position.set(0, 0, -2e3);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+
+    renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.setClearColor(0x000000);
+    document.body.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+    scene.add(
+        new THREE.Mesh(
+            new THREE.SphereGeometry(1e4, 300, 300).scale(1, -1, 1),
+            new THREE.MeshStandardMaterial({
+                map: new THREE.TextureLoader().load('ylyScene/郁孤台.jpg'),
+                side: THREE.DoubleSide
+            })
+        )
+    )
+
+
+    ambient = new THREE.AmbientLight(0xffffff);
+    light = new THREE.HemisphereLight(0xffffff, 0xffffff);
+    light.position.set(5e9, 5e9, 5e9);
+    scene.add(ambient);
+    scene.add(light);
+
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enableZoom = true;
+    controls.autoRotate = false;
+    controls.minDistance = 0;
+    controls.maxDistance = 1e10;
+    controls.enablePan = true;
+
+
+    renderer.render(scene, camera);
+
+
+    function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+
+
+</script>
+</html>
